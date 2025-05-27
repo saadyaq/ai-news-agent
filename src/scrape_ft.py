@@ -12,7 +12,7 @@ headers = {
 
 FT_URL = "https://www.ft.com/technology"
 
-# ✅ Étape 1 : collecter les articles
+# Étape 1 : collecter les articles
 def fetch_ft_article_links():
     response = requests.get(FT_URL, headers=headers)
     soup = BeautifulSoup(response.text, "html.parser")
@@ -27,7 +27,7 @@ def fetch_ft_article_links():
 
     return list(set(links))
 
-# ✅ Étape 2 : extraire le contenu d’un article
+# Étape 2 : extraire le contenu d’un article
 def extract_article_content(url):
     try:
         response = requests.get(url, headers=headers)
