@@ -1,24 +1,22 @@
 import requests
 from bs4 import BeautifulSoup
 
-url = "https://www.ft.com/technology"
+url = "https://techcrunch.com/category/technology/"
 headers = {
-    "User-Agent": "Mozilla/5.0",
-    "Referer": "https://www.google.com/"
+    "User-Agent": "Mozilla/5.0"
 }
 
 response = requests.get(url, headers=headers)
-soup = BeautifulSoup(response.text, "html.parser")
+soup = BeautifulSoup(response.content, "html.parser")
 
-links = []
-for a in soup.find_all("a", href=True):
-    href = a.get("href")   # type: ignore
-    title = a.get_text(strip=True)
-    if href and "/content/" in href and len(title) > 30:
-        full_url = "https://www.coindesk.com" + str(href)
-        links.append((title, full_url))
+articles = []
+for tag in soup.find_all("a", href=True):
+    title = tag.get_text(strip=True)
+    href = tag["href"]
+    if href.startswith("https://techcrunch.com/") and len(title) > 30:
+        articles.append((title, href))
 
-print(f"{len(links)} articles trouvés :\n")
-for title, link in links[:5]:
+print(f"{len(articles)} articles trouvés :\n")
+for title, link in articles[:10]:
     print("-", title)
     print(" ", link)

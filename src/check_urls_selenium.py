@@ -1,31 +1,33 @@
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-from bs4 import BeautifulSoup
-import time
+import requests
+import json
 
-options = Options()
-options.add_argument("--headless")
-options.add_argument("--no-sandbox")
-options.add_argument("--disable-dev-shm-usage")
+url = "https://www.reuters.com/pf/api/v3/content/fetch/articles-by-section-alias"
+params = {
+    "query": json.dumps({
+        "offset": 0,
+        "size": 25,
+        "sectionAlias": "technology",
+        "website": "reuters"
+    })
+}
 
-driver = webdriver.Chrome(options=options)
-driver.get("https://www.coindesk.com/markets/")
-time.sleep(5)
+headers = {
+    "Accept": "application/json",
+    "User-Agent": "Mozilla/5.0",
+    "Referer": "https://www.reuters.com/technology/"
+}
 
-soup = BeautifulSoup(driver.page_source, "html.parser")
+response = requests.get(url, params=params, headers=headers)
+data = response.json()
 
-# 🔥 Nouveau sélecteur basé sur les classes
-links = []
-for a in soup.select("a.text-color-charcoal-900.mb-4.hover\\:underline"):
-    href = a.get("href")
-    text = a.get_text(strip=True)
-    if href and text and len(text) > 20 and href.startswith("/"):
-        full_url = "https://www.coindesk.com" + href
-        links.append((text, full_url))
+articles = []
+for item in data.get("result", {}).get("articles", []):
+    title = item.get("title")
+    url = "https://www.reuters.com" + item.get("canonical_url", "")
+    if title and url:
+        articles.append((title.strip(), url))
 
-driver.quit()
-
-print(f"{len(links)} articles CoinDesk détectés :\n")
-for title, url in links[:10]:
+print(f"[✓] {len(articles)} articles Reuters détectés :\n")
+for title, url in articles[:10]:
     print("-", title)
     print(" ", url)
