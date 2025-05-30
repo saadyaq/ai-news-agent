@@ -5,7 +5,7 @@ import pandas as pd
 conn = sqlite3.connect('../data/articles.db')
 
 # Read the table into a DataFrame
-df = pd.read_sql_query('SELECT * FROM articles', conn)
+df = pd.read_sql_query('SELECT * FROM cleaned_articles', conn)
 
 # Close the connection
 conn.close()
@@ -14,4 +14,4 @@ conn.close()
 print(df.head())
 
 # Optional: save as CSV for inspection
-df.to_csv('../data/articles_dump.csv', index=False)
+df.to_csv('../data/articles_cleaned.csv', index=False)
