@@ -1,18 +1,21 @@
 import openai
-import  sqlite3 
+import sqlite3
 import pandas as pd
 import time
 from openai import OpenAI
-from datetime import datetime,timedelta
+from datetime import datetime, timedelta
 import os
 
-client=OpenAI()
-db_path="../data/articles.db"
-table_name="cleaned_articles"
-if openai.api_key:
+db_path = "../data/articles.db"
+table_name = "cleaned_articles"
+
+api_key = os.getenv("OPENAI_API_KEY")
+if api_key:
+    client = OpenAI(api_key=api_key)
     print("OpenAI API key is set.")
 else:
     print("OpenAI API key is not set.")
+    client = OpenAI()
 
 #Création du prompt
 
