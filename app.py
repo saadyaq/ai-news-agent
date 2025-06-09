@@ -16,9 +16,10 @@ def main():
 
     scripts = [
     "src/scraper_coindesk.py",
-    "src/scrape_cnbc.py",
-    "src/scrape_techcrunch.py",
-    "src/scrape_wired.py",
+    "src/scraper_cnbc.py",
+    "src/scraper_tc.py",
+    "src/scraper_ft.py"
+    "src/scraper_wired.py",
     "src/clean_articles.py",
     "src/summarizer.py",
     "src/send_email.py"
