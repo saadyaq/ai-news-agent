@@ -24,6 +24,7 @@ jobs:
         pip install -r requirements.txt
 
     - name: Exécuter le script principal
+      working-directory: ./
       env:
         
         OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}

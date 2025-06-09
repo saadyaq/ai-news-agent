@@ -1,6 +1,8 @@
 import subprocess 
 import time
 
+import os
+print("📁 Dossier courant :", os.getcwd())
 
 def run_script(path):
     print(f"\n🚀 Lancement de {path}...")
