@@ -1,6 +1,8 @@
 import pandas as pd
 import sqlite3
 from bs4 import BeautifulSoup
+import os
+os.makedirs("../data", exist_ok=True)
 
 def clean_articles(df):
     df=df.drop_duplicates(subset=['title','url']).reset_index(drop=True)

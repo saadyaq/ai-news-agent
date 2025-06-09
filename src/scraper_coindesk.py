@@ -5,7 +5,8 @@ import pandas as pd
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-
+import os
+os.makedirs("../data", exist_ok=True)
 # --- Config Selenium headless ---
 def setup_driver():
     options = Options()

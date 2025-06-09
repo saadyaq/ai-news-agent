@@ -3,7 +3,8 @@ from bs4 import BeautifulSoup
 import pandas as pd
 import sqlite3
 import time
-
+import os
+os.makedirs("../data", exist_ok=True)
 # ✅ Config
 headers = {
     "User-Agent": "Mozilla/5.0",

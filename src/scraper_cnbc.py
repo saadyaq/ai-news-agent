@@ -3,6 +3,10 @@ import requests
 import time
 import sqlite3
 import pandas as pd
+import os
+
+
+os.makedirs("../data", exist_ok=True)
 
 
 #Configuration

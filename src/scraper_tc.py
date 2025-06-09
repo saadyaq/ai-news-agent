@@ -5,7 +5,8 @@ import requests
 from bs4 import BeautifulSoup
 
 
-
+import os
+os.makedirs("../data", exist_ok=True)
 #Configuration
 
 headers = {
