@@ -21,7 +21,7 @@ else:
 
 def build_prompt(content):
     return (
-        "Voici un article de presse.Résume-le de manière concise et professionnelle,"
+        "Voici un article de presse.Résume-le de manière professionnelle mais ajoute aussi d'autres infos sue le sujet fait comme si tu introduisais le sujet à quelqu'un avec un niveau intermédiaire,"
         "en mettant en avant les idées principales et en concluant par une ouverture ou un axe de réflexion : \n\n "
         f"{content}"
     )
