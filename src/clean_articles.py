@@ -1,29 +1,54 @@
 import pandas as pd
 import sqlite3
-from bs4 import BeautifulSoup
 import os
-os.makedirs("../data", exist_ok=True)
+import re
 
-def clean_articles(df):
-    df=df.drop_duplicates(subset=['title','url']).reset_index(drop=True)
-    df=df[df['content'].str.len()>300]
+# 📁 Créer dossier si besoin
+os.makedirs("data", exist_ok=True)
 
-    return df
+# Bases
+SOURCE_DB = "data/articles.db"
+TARGET_DB = "data/clean_articles.db"
 
-def load_articles(db_path="../data/articles.db"):
-    conn=sqlite3.connect(db_path)
-    df=pd.read_sql_query("SELECT * FROM articles",conn)
-    conn.close()
-    return df
+# 🧽 Nettoyage simple
+def clean_text(text):
+    if not isinstance(text, str):
+        return ""
+    return re.sub(r"\s+", " ", text).strip()
 
-def save_cleaned_to_db(df,db_path="../data/articles.db"):
-    conn=sqlite3.connect(db_path)
-    df.to_sql("cleaned_articles",conn,if_exists="replace",index=False)
-    conn.commit()
-    conn.close()
-    print(f"[✓] {len(df)} articles nettoyés sauvegardés dans 'cleaned_articles'.")
+# 📤 Nettoyer + transférer
+def clean_and_transfer():
+    conn_src = sqlite3.connect(SOURCE_DB)
+    df = pd.read_sql_query("SELECT * FROM articles", conn_src)
+    conn_src.close()
 
-if __name__=="__main__":
-    df_raw=load_articles()
-    df_cleaned=clean_articles(df_raw)
-    save_cleaned_to_db(df_cleaned)
+    if df.empty:
+        print("❌ Aucun article trouvé dans la base source.")
+        return
+
+    df = df.drop_duplicates(subset=["title", "url"])
+    df = df[df["content"].str.len() > 300]
+
+    df["title"] = df["title"].apply(clean_text)
+    df["content"] = df["content"].apply(clean_text)
+    df["summary"] = None
+    df["date"] = pd.to_datetime(df["date"]).dt.strftime("%Y-%m-%d")
+
+    conn_tgt = sqlite3.connect(TARGET_DB)
+    urls_existantes = pd.read_sql_query("SELECT url FROM cleaned_articles", conn_tgt)["url"].tolist()
+
+    df_new = df[~df["url"].isin(urls_existantes)]
+
+    if df_new.empty:
+        print("✅ Aucun nouvel article à insérer.")
+    else:
+        df_new[["title", "content", "summary", "url", "date"]].to_sql(
+            "cleaned_articles", conn_tgt, if_exists="append", index=False
+        )
+        print(f"[✓] {len(df_new)} articles nettoyés transférés dans clean_articles.db")
+
+    conn_tgt.commit()
+    conn_tgt.close()
+
+if __name__ == "__main__":
+    clean_and_transfer()
