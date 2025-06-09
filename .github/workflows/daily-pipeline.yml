@@ -23,13 +23,20 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
+    - name: Initialiser la base de données articles.db
+      run: python src/create_art_db.py
+
+    - name: Initialiser la base de données
+      run: python src/create_db.py
+
+    - name: Vérifier que la base a bien été créée
+      run: ls -R ./data
+
     - name: Exécuter le script principal
       working-directory: ./
       env:
-        
         OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         SENDER_EMAIL: ${{ secrets.SENDER_EMAIL }}
         EMAIL_APP_PASSWORD: ${{ secrets.EMAIL_APP_PASSWORD }}
         RECIPIENT_EMAIL: ${{ secrets.RECIPIENT_EMAIL }}
-
       run: python app.py
