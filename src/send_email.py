@@ -42,6 +42,8 @@ def send_email(subject, html_body):
     msg["From"] = SENDER_EMAIL
     msg["To"] = RECIPIENT_EMAIL
 
+    # Add the HTML body as the only MIME part. A plain text fallback could
+    # be added here if needed.
     msg.attach(MIMEText(html_body, "html", "utf-8"))
 
     with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
@@ -58,7 +60,8 @@ if __name__ == "__main__":
     if not summaries:
         print("❌ Aucun résumé à envoyer.")
     else:
-     
+            snippet = (
+            content += snippet
         content = "<p>Bonjour,</p><p>Voici les résumés des dernières 24 heures :</p>"
         for i, (title, summary, url) in enumerate(summaries, 1):
             content += (
