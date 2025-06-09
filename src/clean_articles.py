@@ -7,8 +7,8 @@ import re
 os.makedirs("data", exist_ok=True)
 
 # Bases
-SOURCE_DB = "data/articles.db"
-TARGET_DB = "data/clean_articles.db"
+SOURCE_DB = "../data/articles.db"
+TARGET_DB = "../data/clean_articles.db"
 
 # 🧽 Nettoyage simple
 def clean_text(text):
