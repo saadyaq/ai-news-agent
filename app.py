@@ -18,7 +18,7 @@ def main():
     "src/scraper_coindesk.py",
     "src/scraper_cnbc.py",
     "src/scraper_tc.py",
-    "src/scraper_ft.py"
+    "src/scraper_ft.py",
     "src/scraper_wired.py",
     "src/clean_articles.py",
     "src/summarizer.py",

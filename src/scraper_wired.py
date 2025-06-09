@@ -7,7 +7,9 @@ import time
 import textwrap
 
 # Préparation du répertoire
-os.makedirs('../data', exist_ok=True)
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DATA_DIR = os.path.join(BASE_DIR, "data")
+os.makedirs(DATA_DIR, exist_ok=True)
 
 # Headers pour le scraping
 headers = {
@@ -36,7 +38,7 @@ def fetch_wired_article_links():
             full_url = BASE_URL + href
             links.append((title, full_url))
 
-    unique_links = list(set(links))
+    unique_links = list(dict.fromkeys(links))[:5]
     print(f"[✓] {len(unique_links)} liens extraits depuis Wired.")
     return unique_links
 
@@ -53,7 +55,7 @@ def extract_wired_article_content(url):
         return ""
 
 # 💾 Étape 3 : Sauvegarde dans la base de données SQLite
-def save_articles_to_db(df, db_path="../data/articles.db"):
+def save_articles_to_db(df, db_path=os.path.join(DATA_DIR, "articles.db")):
     conn = sqlite3.connect(db_path)
     df.to_sql("articles", conn, if_exists="append", index=False)
     conn.commit()

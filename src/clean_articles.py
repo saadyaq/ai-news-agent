@@ -4,11 +4,13 @@ import os
 import re
 
 # 📁 Créer dossier si besoin
-os.makedirs("data", exist_ok=True)
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DATA_DIR = os.path.join(BASE_DIR, "data")
+os.makedirs(DATA_DIR, exist_ok=True)
 
 # Bases
-SOURCE_DB = "../data/articles.db"
-TARGET_DB = "../data/clean_articles.db"
+SOURCE_DB = os.path.join(DATA_DIR, "articles.db")
+TARGET_DB = os.path.join(DATA_DIR, "clean_articles.db")
 
 # 🧽 Nettoyage simple
 def clean_text(text):
