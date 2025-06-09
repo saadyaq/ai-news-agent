@@ -2,7 +2,7 @@ import sqlite3, os
 
 os.makedirs("data", exist_ok=True)
 
-conn = sqlite3.connect("data/clean_articles.db")
+conn = sqlite3.connect("../data/clean_articles.db")
 cursor = conn.cursor()
 
 cursor.execute("DROP TABLE IF EXISTS cleaned_articles")

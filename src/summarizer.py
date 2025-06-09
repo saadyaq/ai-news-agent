@@ -7,7 +7,7 @@ import os
 # 🔐 Clé API via variable d'environnement
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
-DB_PATH = "../data/clean_articles.db"
+DB_PATH = "/home/saadyaq/SE/Python/ai-news-agent/data/clean_articles.db"
 TABLE_NAME = "cleaned_articles"
 
 if openai.api_key:
