@@ -65,6 +65,5 @@ if __name__ == "__main__":
                 f"<p>{summary}</p>"
                 f"<p><a href='{url}'>Lire l'article</a></p>"
             )
-
         content += "<p>Bonne lecture,<br>L'équipe AI News</p>"
         send_email("🗞️ Résumés quotidiens AI News", content)
