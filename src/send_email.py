@@ -1,6 +1,7 @@
 import sqlite3
 import smtplib
 from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 from datetime import datetime, timedelta
 import os
 
@@ -34,11 +35,14 @@ def get_summaries():
     return rows
 
 # 📧 Envoyer le mail
-def send_email(subject, body):
-    msg = MIMEText(body, "plain", "utf-8")
+def send_email(subject, html_body):
+    """Send an email with HTML content."""
+    msg = MIMEMultipart("alternative")
     msg["Subject"] = subject
     msg["From"] = SENDER_EMAIL
     msg["To"] = RECIPIENT_EMAIL
+
+    msg.attach(MIMEText(html_body, "html", "utf-8"))
 
     with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
         server.starttls()
@@ -54,9 +58,13 @@ if __name__ == "__main__":
     if not summaries:
         print("❌ Aucun résumé à envoyer.")
     else:
-        content = "Bonjour,\n\nVoici les résumés des dernières 24 heures :\n\n"
+        content = "<p>Bonjour,</p><p>Voici les résumés des dernières 24 heures :</p>"
         for i, (title, summary, url) in enumerate(summaries, 1):
-            content += f"{i}. {title}\n{summary}\n{url}\n\n"
+            content += (
+                f"<hr><h3>{i}. {title}</h3>"
+                f"<p>{summary}</p>"
+                f"<p><a href='{url}'>Lire l'article</a></p>"
+            )
 
-        content += "Bonne lecture,\nL'équipe AI News"
+        content += "<p>Bonne lecture,<br>L'équipe AI News</p>"
         send_email("🗞️ Résumés quotidiens AI News", content)
