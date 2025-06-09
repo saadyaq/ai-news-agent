@@ -32,4 +32,4 @@ jobs:
         EMAIL_APP_PASSWORD: ${{ secrets.EMAIL_APP_PASSWORD }}
         RECIPIENT_EMAIL: ${{ secrets.RECIPIENT_EMAIL }}
 
-      run: python src/app.py
+      run: python app.py
