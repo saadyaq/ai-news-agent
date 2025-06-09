@@ -2,24 +2,26 @@ import subprocess
 import time
 
 
-def run_script(name):
-    print(f"\n🚀 Lancement de {name}...")
-    result = subprocess.run(["python3", name], capture_output=True, text=True)
+def run_script(path):
+    print(f"\n🚀 Lancement de {path}...")
+    result = subprocess.run(["python3", path], capture_output=True, text=True)
     print(result.stdout)
     if result.stderr:
-        print(f"[!] Erreur dans {name} :\n{result.stderr}")
+        print(f"[!] Erreur dans {path} :\n{result.stderr}")
+
 
 def main():
 
     scripts = [
-    "scraper_coindesk.py",
-    "scrape_cnbc.py",
-    "scrape_techcrunch.py",
-    "scrape_wired.py",
-    "clean_articles.py",
-    "summarizer.py",
-    "send_email.py"
+    "src/scraper_coindesk.py",
+    "src/scrape_cnbc.py",
+    "src/scrape_techcrunch.py",
+    "src/scrape_wired.py",
+    "src/clean_articles.py",
+    "src/summarizer.py",
+    "src/send_email.py"
     ]
+
     for script in scripts:
         run_script(script)
         time.sleep(2)

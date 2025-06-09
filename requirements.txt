@@ -1,7 +1,13 @@
-beautifulsoup4  
+beautifulsoup4
 requests
 langchain
 openai
 streamlit
 pandas
 selenium
+seaborn
+matplotlib
+#sqlite3
+smtplib
+email
+datetime
