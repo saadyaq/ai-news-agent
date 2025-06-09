@@ -11,7 +11,8 @@ SENDER_EMAIL = os.getenv("SENDER_EMAIL")
 SENDER_PASSWORD = os.getenv("EMAIL_APP_PASSWORD")
 RECIPIENT_EMAIL = os.getenv("RECIPIENT_EMAIL")
 
-DB_PATH = "../data/clean_articles.db"
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DB_PATH = os.path.join(BASE_DIR, "data", "clean_articles.db")
 TABLE_NAME = "cleaned_articles"
 
 # 📤 Récupérer les résumés récents
@@ -53,8 +54,9 @@ if __name__ == "__main__":
     if not summaries:
         print("❌ Aucun résumé à envoyer.")
     else:
-        content = ""
-        for title, summary, url in summaries:
-            content += f"📰 {title}\n{summary}\n🔗 {url}\n\n"
+        content = "Bonjour,\n\nVoici les résumés des dernières 24 heures :\n\n"
+        for i, (title, summary, url) in enumerate(summaries, 1):
+            content += f"{i}. {title}\n{summary}\n{url}\n\n"
 
+        content += "Bonne lecture,\nL'équipe AI News"
         send_email("🗞️ Résumés quotidiens AI News", content)

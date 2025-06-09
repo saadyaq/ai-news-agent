@@ -5,8 +5,9 @@ import sqlite3
 import pandas as pd
 import os
 
-
-os.makedirs("../data", exist_ok=True)
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DATA_DIR = os.path.join(BASE_DIR, "data")
+os.makedirs(DATA_DIR, exist_ok=True)
 
 
 #Configuration
@@ -24,18 +25,19 @@ def fetch_cnbc_article_links():
 
     response=requests.get(cnbc_url,headers=headers)
     soup = BeautifulSoup(response.text,"html.parser")
-    links=[]
+    links = []
 
-    for a in soup.find_all("a",href=True):
-        href=a.get("href")
-        title=a.get_text(strip=True)
-        if "/202" in str(href) and len(title)>30:
-            full_url = str(href) if href.startswith("http") else "https://www.cnbc.com" + str(href)
+    for a in soup.find_all("a", href=True):
+        href = a.get("href")
+        title = a.get_text(strip=True)
+        if "/202" in str(href) and len(title) > 30:
+            full_url = href if href.startswith("http") else "https://www.cnbc.com" + href
+            links.append((title, full_url))
 
-            links.append((title,full_url))
-        
-    
-    return list(set(links))
+    # Uniques et limité à 5 liens
+    unique_links = list(dict.fromkeys(links))[:5]
+
+    return unique_links
 
 
 
@@ -52,7 +54,7 @@ def extract_article_content(url):
         print(f"Erreur avec {url}:{e}")
         return ""
 
-def save_articles_to_db(df,db_path="../data/articles.db"):
+def save_articles_to_db(df, db_path=os.path.join(DATA_DIR, "articles.db")):
     conn = sqlite3.connect(db_path)
     df.to_sql("articles", conn, if_exists="append", index=False)
     conn.commit()

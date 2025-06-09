@@ -6,7 +6,9 @@ from bs4 import BeautifulSoup
 
 
 import os
-os.makedirs("../data", exist_ok=True)
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DATA_DIR = os.path.join(BASE_DIR, "data")
+os.makedirs(DATA_DIR, exist_ok=True)
 #Configuration
 
 headers = {
@@ -27,7 +29,7 @@ def fetch_tc_article_links():
         if href.startswith("https://techcrunch.com/") and len(title) > 30 and "202" in href:
             links.append((title, href))
 
-    unique_links = list(set(links))
+    unique_links = list(dict.fromkeys(links))[:5]
     print(f"[✓] {len(unique_links)} liens extraits depuis TechCrunch.")
     return unique_links
 
@@ -45,7 +47,7 @@ def extract_article_content(url):
         return ""
 
 
-def save_articles_to_db(df,db_path="../data/articles.db"):
+def save_articles_to_db(df, db_path=os.path.join(DATA_DIR, "articles.db")):
     conn = sqlite3.connect(db_path)
     df.to_sql("articles", conn, if_exists="append", index=False)
     conn.commit()
