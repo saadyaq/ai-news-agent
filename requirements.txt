@@ -7,7 +7,3 @@ pandas
 selenium
 seaborn
 matplotlib
-#sqlite3
-smtplib
-email
-datetime
