@@ -38,7 +38,7 @@ def fetch_wired_article_links():
             full_url = BASE_URL + href
             links.append((title, full_url))
 
-    unique_links = list(set(links))
+    unique_links = list(dict.fromkeys(links))[:5]
     print(f"[✓] {len(unique_links)} liens extraits depuis Wired.")
     return unique_links
 
