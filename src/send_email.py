@@ -58,7 +58,6 @@ if __name__ == "__main__":
     if not summaries:
         print("❌ Aucun résumé à envoyer.")
     else:
-     
         content = "<p>Bonjour,</p><p>Voici les résumés des dernières 24 heures :</p>"
         for i, (title, summary, url) in enumerate(summaries, 1):
             content += (
@@ -67,4 +66,4 @@ if __name__ == "__main__":
                 f"<p><a href='{url}'>Lire l'article</a></p>"
             )
         content += "<p>Bonne lecture,<br>L'équipe AI News</p>"
-
+        send_email("🗞️ Résumés quotidiens AI News", content)
