@@ -25,7 +25,7 @@ def build_prompt(content):
     )
 
 # 📥 Récupérer les articles sans résumé, publiés dans les dernières 24h
-def get_articles_to_summarize(limit=5):
+def get_articles_to_summarize():
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
 
@@ -35,8 +35,7 @@ def get_articles_to_summarize(limit=5):
         SELECT id, content FROM {TABLE_NAME}
         WHERE summary IS NULL AND date >= ?
         ORDER BY date DESC
-        LIMIT ?
-    """, (since, limit))
+    """, (since,))
 
     rows = cursor.fetchall()
     conn.close()

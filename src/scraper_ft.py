@@ -22,13 +22,14 @@ def fetch_ft_article_links():
 
     links = []
     for a in soup.find_all("a", href=True):
-        href = a.get("href")   # type: ignore
+        href = a.get("href")  # type: ignore
         title = a.get_text(strip=True)
         if "/content/" in str(href) and len(title) > 30:
             full_url = "https://www.ft.com" + str(href)
             links.append((title, full_url))
 
-    return list(set(links))
+    unique_links = list(dict.fromkeys(links))[:5]
+    return unique_links
 
 # Étape 2 : extraire le contenu d’un article
 def extract_article_content(url):

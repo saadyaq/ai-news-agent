@@ -25,18 +25,19 @@ def fetch_cnbc_article_links():
 
     response=requests.get(cnbc_url,headers=headers)
     soup = BeautifulSoup(response.text,"html.parser")
-    links=[]
+    links = []
 
-    for a in soup.find_all("a",href=True):
-        href=a.get("href")
-        title=a.get_text(strip=True)
-        if "/202" in str(href) and len(title)>30:
-            full_url = str(href) if href.startswith("http") else "https://www.cnbc.com" + str(href)
+    for a in soup.find_all("a", href=True):
+        href = a.get("href")
+        title = a.get_text(strip=True)
+        if "/202" in str(href) and len(title) > 30:
+            full_url = href if href.startswith("http") else "https://www.cnbc.com" + href
+            links.append((title, full_url))
 
-            links.append((title,full_url))
-        
-    
-    return list(set(links))
+    # Uniques et limité à 5 liens
+    unique_links = list(dict.fromkeys(links))[:5]
+
+    return unique_links
 
 
 
