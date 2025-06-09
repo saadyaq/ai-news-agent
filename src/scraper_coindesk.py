@@ -6,7 +6,9 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 import os
-os.makedirs("../data", exist_ok=True)
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DATA_DIR = os.path.join(BASE_DIR, "data")
+os.makedirs(DATA_DIR, exist_ok=True)
 # --- Config Selenium headless ---
 def setup_driver():
     options = Options()
@@ -53,7 +55,7 @@ def extract_article_content(url):
         return ""
 
 # --- Étape 3 : Sauvegarder dans la base SQLite ---
-def save_articles_to_db(df, db_path="../data/articles.db"):
+def save_articles_to_db(df, db_path=os.path.join(DATA_DIR, "articles.db")):
     conn = sqlite3.connect(db_path)
     df.to_sql("articles", conn, if_exists="append", index=False)
     conn.commit()
