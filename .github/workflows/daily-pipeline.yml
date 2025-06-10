@@ -2,7 +2,7 @@ name: Daily AI News Pipeline
 
 on:
   schedule:
-    - cron: '0 6 * * *'  # ⏰ Tous les jours à 6h UTC = 8h Paris
+    - cron: '*/5 * * * *'  # ⏰ Tous les jours à 6h UTC = 8h Paris
   workflow_dispatch:
 
 jobs:
