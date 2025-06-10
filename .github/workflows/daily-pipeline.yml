@@ -1,43 +1,42 @@
 name: Daily AI News Pipeline
-# Forcer l'activation du cron
 
 on:
   schedule:
-    - cron: '*/5 * * * *'  # ⏰ Tous les jours à 6h UTC = 8h (heure de Paris)
-  workflow_dispatch:     # Permet de déclencher manuellement depuis GitHub
+    - cron: '0 6 * * *'  # ⏰ Tous les jours à 6h UTC = 8h heure de Paris
+  workflow_dispatch:     # ▶️ Permet de lancer manuellement
 
 jobs:
   run-pipeline:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout du code
-      uses: actions/checkout@v3
+      - name: 📦 Récupérer le code
+        uses: actions/checkout@v3
 
-    - name: Configurer Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.10'
+      - name: 🐍 Configurer Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
 
-    - name: Installer les dépendances
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
+      - name: 📥 Installer les dépendances
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
 
-    - name: Initialiser la base de données articles.db
-      run: python src/create_art_db.py
+      - name: 🛠️ Créer la BDD des articles bruts
+        run: python src/create_art_db.py
 
-    - name: Initialiser la base de données
-      run: python src/create_db.py
+      - name: 🧹 Créer la BDD nettoyée
+        run: python src/create_db.py
 
-    - name: Vérifier que la base a bien été créée
-      run: ls -R ./data
+      - name: 🗂️ Vérifier les fichiers dans ./data
+        run: ls -R ./data
 
-    - name: Exécuter le script principal
-      working-directory: ./
-      env:
-        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-        SENDER_EMAIL: ${{ secrets.SENDER_EMAIL }}
-        EMAIL_APP_PASSWORD: ${{ secrets.EMAIL_APP_PASSWORD }}
-        RECIPIENT_EMAIL: ${{ secrets.RECIPIENT_EMAIL }}
-      run: python app.py
+      - name: 🚀 Lancer le script principal
+        working-directory: ./
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          SENDER_EMAIL: ${{ secrets.SENDER_EMAIL }}
+          EMAIL_APP_PASSWORD: ${{ secrets.EMAIL_APP_PASSWORD }}
+          RECIPIENT_EMAIL: ${{ secrets.RECIPIENT_EMAIL }}
+        run: python app.py
