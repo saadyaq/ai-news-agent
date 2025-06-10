@@ -1,4 +1,5 @@
 name: Daily AI News Pipeline
+# Forcer l'activation du cron
 
 on:
   schedule:
