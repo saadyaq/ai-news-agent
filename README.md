@@ -46,7 +46,7 @@ AI News Agent is an automated pipeline that collects technology news, cleans the
 These steps are executed sequentially by [`app.py`](app.py).
 
 ## Automation
-The workflow in [`.github/workflows/daily-pipeline.yml`](.github/workflows/daily-pipeline.yml) runs the pipeline at 06:00 UTC each day. The required secrets must be set in the repository for it to send emails and call the OpenAI API.
+The workflow in [`.github/workflows/daily-pipeline.yml`](.github/workflows/daily-pipeline.yml) runs the pipeline at 06:00 Paris time (using the `Europe/Paris` timezone) each day. The required secrets must be set in the repository for it to send emails and call the OpenAI API. Ensure the workflow file resides on your default branch so that the schedule triggers correctly.
 
 ## Data
 All article data and summaries are stored in the `data/` directory:
