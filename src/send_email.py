@@ -4,7 +4,9 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from datetime import datetime, timedelta
 from urllib.parse import urlparse
+
 import re
+
 import os
 
 # 🔐 Chargement depuis les secrets (GitHub Actions ou .env)
@@ -52,6 +54,7 @@ def get_summaries(max_per_domain=5):
     return limited_rows
 
 
+
 # ✂️ S'assurer que chaque résumé se termine par une phrase complète
 def complete_sentence(text: str) -> str:
     """Trim trailing partial sentence if summary appears cut."""
@@ -64,6 +67,7 @@ def complete_sentence(text: str) -> str:
     if match:
         return text[: match.end()]
     return text
+
 
 
 # 📧 Envoyer le mail
