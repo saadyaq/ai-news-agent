@@ -3,6 +3,7 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from datetime import datetime, timedelta
+from urllib.parse import urlparse
 import os
 
 # 🔐 Chargement depuis les secrets (GitHub Actions ou .env)
@@ -17,22 +18,36 @@ DB_PATH = os.path.join(BASE_DIR, "data", "clean_articles.db")
 TABLE_NAME = "cleaned_articles"
 
 # 📤 Récupérer les résumés récents
-def get_summaries():
+def get_summaries(max_per_domain=5):
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
 
     since = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
 
-    cursor.execute(f"""
+    cursor.execute(
+        f"""
         SELECT title, summary, url FROM {TABLE_NAME}
         WHERE summary IS NOT NULL AND date >= ?
         ORDER BY date DESC
-        LIMIT 10
-    """, (since,))
+    """,
+        (since,),
+    )
 
     rows = cursor.fetchall()
     conn.close()
-    return rows
+
+    grouped = {}
+    for row in rows:
+        domain = urlparse(row[2]).netloc
+        grouped.setdefault(domain, [])
+        if len(grouped[domain]) < max_per_domain:
+            grouped[domain].append(row)
+
+    limited_rows = []
+    for domain_rows in grouped.values():
+        limited_rows.extend(domain_rows)
+
+    return limited_rows
 
 # 📧 Envoyer le mail
 def send_email(subject, html_body):
