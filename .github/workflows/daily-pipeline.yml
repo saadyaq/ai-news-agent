@@ -2,19 +2,18 @@ name: Daily AI News Pipeline
 
 on:
   schedule:
-    - cron: '0 6 * * *'
-      timezone: 'Europe/Paris'  # ⏰ Tous les jours à 6h heure de Paris
-  workflow_dispatch:     # ▶️ Permet de lancer manuellement
+    - cron: '0 6 * * *'  # ⏰ Tous les jours à 6h UTC = 8h Paris
+  workflow_dispatch:
 
 jobs:
   run-pipeline:
     runs-on: ubuntu-latest
 
     steps:
-      - name: 📦 Récupérer le code
+      - name: 📦 Checkout du code
         uses: actions/checkout@v3
 
-      - name: 🐍 Configurer Python
+      - name: 🐍 Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
@@ -24,16 +23,16 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: 🛠️ Créer la BDD des articles bruts
+      - name: 🛠️ Init base articles bruts
         run: python src/create_art_db.py
 
-      - name: 🧹 Créer la BDD nettoyée
+      - name: 🧹 Init base nettoyée
         run: python src/create_db.py
 
-      - name: 🗂️ Vérifier les fichiers dans ./data
+      - name: 📁 Lister les fichiers ./data
         run: ls -R ./data
 
-      - name: 🚀 Lancer le script principal
+      - name: 🚀 Exécuter app.py
         working-directory: ./
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
