@@ -3,6 +3,8 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from datetime import datetime, timedelta
+from urllib.parse import urlparse
+import re
 import os
 
 # 🔐 Chargement depuis les secrets (GitHub Actions ou .env)
@@ -16,23 +18,53 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DB_PATH = os.path.join(BASE_DIR, "data", "clean_articles.db")
 TABLE_NAME = "cleaned_articles"
 
+
 # 📤 Récupérer les résumés récents
-def get_summaries():
+def get_summaries(max_per_domain=5):
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
 
     since = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
 
-    cursor.execute(f"""
+    cursor.execute(
+        f"""
         SELECT title, summary, url FROM {TABLE_NAME}
         WHERE summary IS NOT NULL AND date >= ?
         ORDER BY date DESC
-        LIMIT 10
-    """, (since,))
+    """,
+        (since,),
+    )
 
     rows = cursor.fetchall()
     conn.close()
-    return rows
+
+    grouped = {}
+    for row in rows:
+        domain = urlparse(row[2]).netloc
+        grouped.setdefault(domain, [])
+        if len(grouped[domain]) < max_per_domain:
+            grouped[domain].append(row)
+
+    limited_rows = []
+    for domain_rows in grouped.values():
+        limited_rows.extend(domain_rows)
+
+    return limited_rows
+
+
+# ✂️ S'assurer que chaque résumé se termine par une phrase complète
+def complete_sentence(text: str) -> str:
+    """Trim trailing partial sentence if summary appears cut."""
+    text = text.strip()
+    if not text or text[-1] in ".!?\u2026":
+        return text
+
+    # Chercher la dernière ponctuation forte
+    match = re.search(r"[.!?\u2026](?!.*[.!?\u2026])", text)
+    if match:
+        return text[: match.end()]
+    return text
+
 
 # 📧 Envoyer le mail
 def send_email(subject, html_body):
@@ -51,6 +83,7 @@ def send_email(subject, html_body):
 
     print("📬 Email envoyé avec succès.")
 
+
 # ▶️ Pipeline d'envoi
 if __name__ == "__main__":
     summaries = get_summaries()
@@ -60,6 +93,7 @@ if __name__ == "__main__":
     else:
         content = "<p>Bonjour,</p><p>Voici les résumés des dernières 24 heures :</p>"
         for i, (title, summary, url) in enumerate(summaries, 1):
+            summary = complete_sentence(summary)
             content += (
                 f"<hr><h3>{i}. {title}</h3>"
                 f"<p>{summary}</p>"
